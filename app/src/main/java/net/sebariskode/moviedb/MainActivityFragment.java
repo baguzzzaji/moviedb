@@ -18,10 +18,10 @@ public class MainActivityFragment extends Fragment {
     private MovieAdapter movieAdapter;
 
     Movie[] movies = {
-            new Movie("Deadpool", "Yeah", 8.9, "012816", "poster.png"),
-            new Movie("Superman", "Son of Krypton", 9.0, "022416", "poster.png"),
-            new Movie("Batman", "King of Gotham", 9.5, "032416", "poster.png"),
-            new Movie("Avenger", "So so", 8.0, "031616", "poster.png")
+            new Movie("Deadpool", "Yeah", 8.9, "012816", R.drawable.poster),
+            new Movie("Superman", "Son of Krypton", 9.0, "022416", R.drawable.poster),
+            new Movie("Batman", "King of Gotham", 9.5, "032416", R.drawable.poster),
+            new Movie("Avenger", "So so", 8.0, "031616", R.drawable.poster)
     };
 
     public MainActivityFragment() {
