@@ -23,7 +23,6 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Arrays;
 
 /**
  * Created by baguzzzaji on 3/27/16.
@@ -43,13 +42,20 @@ public class MainActivityFragment extends Fragment {
 
     }
 
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        FetchMoviesTask task = new FetchMoviesTask();
+        task.execute();
+    }
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         View rootView = inflater.inflate(R.layout.fragment_main, container, false);
 
-        movieAdapter = new MovieAdapter(getActivity(), Arrays.asList(movies));
+        movieAdapter = new MovieAdapter(getActivity(), new ArrayList<Movie>());
 
         GridView gridView = (GridView) rootView.findViewById(R.id.movies_grid);
         gridView.setAdapter(movieAdapter);
@@ -67,7 +73,7 @@ public class MainActivityFragment extends Fragment {
 
             String moviesJsonStr = null;
 
-            String api_key = new MainActivity().getString(R.string.api_key);
+            String api_key = getContext().getString(R.string.api_key);
 
             try {
                 final String MOVIES_BASE_URL = "http://api.themoviedb.org/3/movie";
@@ -140,12 +146,13 @@ public class MainActivityFragment extends Fragment {
             double rating;
             String release_date;
 
-            // SErver movies information
+            // Server movies information
             final String TITLE = "original_title";
             final String POSTER = "poster_path";
             final String OVERVIEW = "overview";
             final String RATING = "vote_average";
             final String RELEASE_DATE = "release_date";
+            final String POSTER_BASE = "http://image.tmdb.org/t/p/w185";
 
             // Json information
             final String RESULTS = "results";
@@ -170,7 +177,7 @@ public class MainActivityFragment extends Fragment {
                     release_date = movieJson.getString(RELEASE_DATE);
 
 
-                    movies.add(new Movie(title, overview, rating, release_date, poster));
+                    movies.add(new Movie(title, overview, rating, release_date, POSTER_BASE+poster));
                 }
 
                 return movies;
@@ -185,6 +192,9 @@ public class MainActivityFragment extends Fragment {
         @Override
         protected void onPostExecute(ArrayList<Movie> movies) {
             super.onPostExecute(movies);
+            for (Movie movie:movies) {
+                movieAdapter.add(movie);
+            }
             movieAdapter.notifyDataSetChanged();
         }
     }
