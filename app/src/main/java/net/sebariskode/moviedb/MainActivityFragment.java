@@ -158,33 +158,25 @@ public class MainActivityFragment extends Fragment {
             final String RESULTS = "results";
 
             try {
-                try {
-                    JSONObject moviesJson = new JSONObject(moviesJsonStr);
-                    JSONArray moviesArray = moviesJson.getJSONArray(RESULTS);
+                JSONObject moviesJson = new JSONObject(moviesJsonStr);
+                JSONArray moviesArray = moviesJson.getJSONArray(RESULTS);
 
-                    Log.v(LOG_TAG, moviesJson.toString());
-                    Log.v(LOG_TAG, moviesArray.toString());
+                ArrayList<Movie> movies = new ArrayList<>();
 
+                for (int i = 0; i < moviesArray.length(); i++) {
+                    JSONObject movieJson = moviesArray.getJSONObject(i);
 
-                    ArrayList<Movie> movies = new ArrayList<>();
-
-                    for (int i = 0; i < moviesArray.length(); i++) {
-                        JSONObject movieJson = moviesArray.getJSONObject(i);
-
-                        title = movieJson.getString(TITLE);
-                        poster = movieJson.getString(POSTER);
-                        overview = movieJson.getString(OVERVIEW);
-                        rating = movieJson.getDouble(RATING);
-                        release_date = movieJson.getString(RELEASE_DATE);
+                    title = movieJson.getString(TITLE);
+                    poster = movieJson.getString(POSTER);
+                    overview = movieJson.getString(OVERVIEW);
+                    rating = movieJson.getDouble(RATING);
+                    release_date = movieJson.getString(RELEASE_DATE);
 
 
-                        movies.add(new Movie(title, overview, rating, release_date, POSTER_BASE+poster));
-                    }
-
-                    return movies;
-                } catch (NullPointerException e) {
-                    Log.e(LOG_TAG, "Error ", e);
+                    movies.add(new Movie(title, overview, rating, release_date, POSTER_BASE+poster));
                 }
+
+                return movies;
             } catch (JSONException e) {
                 Log.e(LOG_TAG, e.getMessage(), e);
                 e.printStackTrace();
