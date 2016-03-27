@@ -5,9 +5,9 @@ public class Movie {
     String movieOverview;
     double movieRating;
     String movieReleaseDate;
-    int moviePoster; // drawable reference id
+    String moviePoster; // drawable reference id
 
-    public Movie(String movie, String overview, double rating, String release_date, int image) {
+    public Movie(String movie, String overview, double rating, String release_date, String image) {
         movieTitle = movie;
         moviePoster = image;
         movieOverview = overview;
