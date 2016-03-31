@@ -32,10 +32,10 @@ public class MainActivityFragment extends Fragment {
     private MovieAdapter movieAdapter;
 
     Movie[] movies = {
-            new Movie("Deadpool", "Yeah", 8.9, "012816", "poster.png"),
-            new Movie("Superman", "Son of Krypton", 9.0, "022416", "poster.png"),
-            new Movie("Batman", "King of Gotham", 9.5, "032416", "poster.png"),
-            new Movie("Avenger", "So so", 8.0, "031616", "poster.png")
+            new Movie("Deadpool", "Yeah", 8.9, "012816", "poster.png", "poster.png"),
+            new Movie("Superman", "Son of Krypton", 9.0, "022416", "poster.png", "poster.png"),
+            new Movie("Batman", "King of Gotham", 9.5, "032416", "poster.png", "poster.png"),
+            new Movie("Avenger", "So so", 8.0, "031616", "poster.png", "poster.png")
     };
 
     public MainActivityFragment() {
@@ -145,10 +145,12 @@ public class MainActivityFragment extends Fragment {
             String overview;
             double rating;
             String release_date;
+            String backdrop;
 
             // Server movies information
             final String TITLE = "original_title";
             final String POSTER = "poster_path";
+            final String BACKDROP = "backdrop_path";
             final String OVERVIEW = "overview";
             final String RATING = "vote_average";
             final String RELEASE_DATE = "release_date";
@@ -171,9 +173,10 @@ public class MainActivityFragment extends Fragment {
                     overview = movieJson.getString(OVERVIEW);
                     rating = movieJson.getDouble(RATING);
                     release_date = movieJson.getString(RELEASE_DATE);
+                    backdrop = moviesJson.getString(BACKDROP);
 
 
-                    movies.add(new Movie(title, overview, rating, release_date, POSTER_BASE+poster));
+                    movies.add(new Movie(title, overview, rating, release_date, POSTER_BASE+poster, backdrop));
                 }
 
                 return movies;
