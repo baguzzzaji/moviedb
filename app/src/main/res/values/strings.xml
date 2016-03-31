@@ -2,5 +2,6 @@
     <string name="app_name">MovieDB</string>
     <string name="action_settings">Settings</string>
     <string name="movie_poster">Movie Poster</string>
-    <string name="api_key">your api here</string>
+    <string name="api_key">1bb03dcadd1803cf79af629648c59d38</string>
+    <string name="title_activity_detail">DetailActivity</string>
 </resources>
