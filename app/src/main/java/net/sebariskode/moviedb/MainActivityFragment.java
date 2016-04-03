@@ -5,11 +5,12 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.GridView;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -29,14 +30,12 @@ import java.util.ArrayList;
  */
 public class MainActivityFragment extends Fragment {
 
+    private static final String TAG = MainActivityFragment.class.getSimpleName();
+    private static final int SPAN_COUNT = 2;
     private MovieAdapter movieAdapter;
-
-    Movie[] movies = {
-            new Movie("Deadpool", "Yeah", 8.9, "012816", "poster.png", "poster.png"),
-            new Movie("Superman", "Son of Krypton", 9.0, "022416", "poster.png", "poster.png"),
-            new Movie("Batman", "King of Gotham", 9.5, "032416", "poster.png", "poster.png"),
-            new Movie("Avenger", "So so", 8.0, "031616", "poster.png", "poster.png")
-    };
+    protected RecyclerView recyclerView;
+    protected GridLayoutManager gridLayoutManager;
+    protected ArrayList<Movie> movies;
 
     public MainActivityFragment() {
 
@@ -45,6 +44,7 @@ public class MainActivityFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         FetchMoviesTask task = new FetchMoviesTask();
         task.execute();
     }
@@ -54,11 +54,13 @@ public class MainActivityFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         View rootView = inflater.inflate(R.layout.fragment_main, container, false);
+        rootView.setTag(TAG);
 
-        movieAdapter = new MovieAdapter(getActivity(), new ArrayList<Movie>());
-
-        GridView gridView = (GridView) rootView.findViewById(R.id.movies_grid);
-        gridView.setAdapter(movieAdapter);
+        recyclerView = (RecyclerView) rootView.findViewById(R.id.movies_grid);
+        gridLayoutManager = new GridLayoutManager(getActivity(), SPAN_COUNT);
+        movieAdapter = new MovieAdapter(movies);
+        recyclerView.setLayoutManager(gridLayoutManager);
+        recyclerView.setAdapter(movieAdapter);
 
         return rootView;
     }
@@ -138,6 +140,7 @@ public class MainActivityFragment extends Fragment {
             }
             return null;
         }
+
         private ArrayList<Movie> getMovieDataFromJson(String moviesJsonStr) throws JSONException {
             // Values we take
             String title;
@@ -150,7 +153,6 @@ public class MainActivityFragment extends Fragment {
             // Server movies information
             final String TITLE = "original_title";
             final String POSTER = "poster_path";
-            final String BACKDROP = "backdrop_path";
             final String OVERVIEW = "overview";
             final String RATING = "vote_average";
             final String RELEASE_DATE = "release_date";
@@ -163,7 +165,10 @@ public class MainActivityFragment extends Fragment {
                 JSONObject moviesJson = new JSONObject(moviesJsonStr);
                 JSONArray moviesArray = moviesJson.getJSONArray(RESULTS);
 
-                ArrayList<Movie> movies = new ArrayList<>();
+                Log.v(TAG, moviesJson.toString());
+                Log.v(TAG, moviesArray.toString());
+
+                movies = new ArrayList<>();
 
                 for (int i = 0; i < moviesArray.length(); i++) {
                     JSONObject movieJson = moviesArray.getJSONObject(i);
@@ -173,10 +178,9 @@ public class MainActivityFragment extends Fragment {
                     overview = movieJson.getString(OVERVIEW);
                     rating = movieJson.getDouble(RATING);
                     release_date = movieJson.getString(RELEASE_DATE);
-                    backdrop = moviesJson.getString(BACKDROP);
 
 
-                    movies.add(new Movie(title, overview, rating, release_date, POSTER_BASE+poster, backdrop));
+                    movies.add(new Movie(title, overview, rating, release_date, POSTER_BASE+poster, "backdrop_path"));
                 }
 
                 return movies;
@@ -189,11 +193,8 @@ public class MainActivityFragment extends Fragment {
         }
 
         @Override
-        protected void onPostExecute(ArrayList<Movie> movies) {
-            super.onPostExecute(movies);
-            for (Movie movie:movies) {
-                movieAdapter.add(movie);
-            }
+        protected void onPostExecute(ArrayList<Movie> moviesData) {
+            super.onPostExecute(moviesData);
             movieAdapter.notifyDataSetChanged();
         }
     }
