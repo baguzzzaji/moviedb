@@ -29,7 +29,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> 
             view.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Log.d(TAG, "Movie " + getPosition() + " clicked.");
+                    Log.d(TAG, "Movie " + getAdapterPosition() + " clicked.");
                 }
             });
 
@@ -41,8 +41,9 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> 
         }
     }
 
-    public MovieAdapter(ArrayList<Movie> moviesData) {
+    public MovieAdapter(Context parent_context, ArrayList<Movie> moviesData) {
         movies = moviesData;
+        context = parent_context;
     }
 
     @Override
@@ -55,18 +56,11 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> 
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        Log.d(TAG, "Element " + position + " set.");
-
         Picasso.with(context).load(movies.get(position).moviePoster).into(holder.getImageView());
     }
 
     @Override
     public int getItemCount() {
-
-        if (movies == null) {
-            return 0;
-        }
-
         return movies.size();
     }
 }
