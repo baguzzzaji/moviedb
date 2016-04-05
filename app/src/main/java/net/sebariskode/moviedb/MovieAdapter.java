@@ -1,6 +1,7 @@
 package net.sebariskode.moviedb;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -12,26 +13,29 @@ import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
-/**
- * Created by baguzzzaji on 3/27/16.
- */
+
 public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> {
     private static final String TAG = MovieAdapter.class.getSimpleName();
 
     private ArrayList<Movie> movies;
     private Context context;
 
-    public static class ViewHolder extends RecyclerView.ViewHolder {
+    public static class ViewHolder extends RecyclerView.ViewHolder{
         private final ImageView imageView;
+        private final Context context;
 
         public ViewHolder(View view) {
             super(view);
+            context = view.getContext();
             view.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    Intent intent = new Intent(context, DetailActivity.class);
+                    context.startActivity(intent);
                     Log.d(TAG, "Movie " + getAdapterPosition() + " clicked.");
                 }
             });
+
 
             imageView = (ImageView) view.findViewById(R.id.movie_poster);
         }
