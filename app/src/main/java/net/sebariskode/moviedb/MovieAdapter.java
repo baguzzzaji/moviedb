@@ -18,19 +18,40 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> 
     private static final String TAG = MovieAdapter.class.getSimpleName();
 
     private ArrayList<Movie> movies;
+
     private Context context;
 
-    public static class ViewHolder extends RecyclerView.ViewHolder{
+    public static class ViewHolder extends RecyclerView.ViewHolder {
+        static final String MOVIE_TITLE = "movie_title";
+
+        static final String MOVIE_OVERVIEW = "movie_overview";
+
+        static final String MOVIE_RELEASE_DATE = "movie_release_date";
+
+        static final String MOVIE_POSTER = "movie_poster";
+
+        static final String MOVIE_BACKDROP = "movie_backdrop";
+
+        static final String MOVIE_RATING = "movie_rating";
+
         private final ImageView imageView;
+
         private final Context context;
 
-        public ViewHolder(View view) {
+        public ViewHolder(final View view, final ArrayList<Movie> movies) {
             super(view);
             context = view.getContext();
+
             view.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     Intent intent = new Intent(context, DetailActivity.class);
+                    intent.putExtra(MOVIE_TITLE, movies.get(getAdapterPosition()).getMovieTitle());
+                    intent.putExtra(MOVIE_OVERVIEW, movies.get(getAdapterPosition()).getMovieOverview());
+                    intent.putExtra(MOVIE_RELEASE_DATE, movies.get(getAdapterPosition()).getMovieReleaseDate());
+                    intent.putExtra(MOVIE_POSTER, movies.get(getAdapterPosition()).getMoviePoster());
+                    intent.putExtra(MOVIE_BACKDROP, movies.get(getAdapterPosition()).getMovieBackdropImage());
+                    intent.putExtra(MOVIE_RATING, movies.get(getAdapterPosition()).getMovieRating());
                     context.startActivity(intent);
                     Log.d(TAG, "Movie " + getAdapterPosition() + " clicked.");
                 }
@@ -53,9 +74,9 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.movie_item, parent, false);
+                .inflate(R.layout.movie_item, parent, false);
 
-        return new ViewHolder(view);
+        return new ViewHolder(view, movies);
     }
 
     @Override

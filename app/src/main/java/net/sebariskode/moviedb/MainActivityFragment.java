@@ -22,16 +22,16 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
-/**
- * Created by baguzzzaji on 3/27/16.
- */
 public class MainActivityFragment extends Fragment {
 
     private static final String TAG = MainActivityFragment.class.getSimpleName();
+
     private static final int SPAN_COUNT = 2;
 
     protected RecyclerView recyclerView;
+
     protected GridLayoutManager gridLayoutManager;
+
     protected ArrayList<Movie> movies;
 
     public MainActivityFragment() {
@@ -101,6 +101,7 @@ public class MainActivityFragment extends Fragment {
 
         recyclerView.setLayoutManager(gridLayoutManager);
         recyclerView.setAdapter(movieAdapter);
+
 
         return rootView;
     }
