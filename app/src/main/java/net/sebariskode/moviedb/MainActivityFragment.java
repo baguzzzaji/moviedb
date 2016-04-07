@@ -1,10 +1,13 @@
 package net.sebariskode.moviedb;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -32,7 +35,10 @@ public class MainActivityFragment extends Fragment {
 
     protected GridLayoutManager gridLayoutManager;
 
-    protected ArrayList<Movie> movies;
+    protected MovieAdapter movieAdapter;
+
+
+    protected ArrayList<Movie> movies = new ArrayList<>();
 
     public MainActivityFragment() {
 
@@ -43,13 +49,24 @@ public class MainActivityFragment extends Fragment {
         super.onCreate(savedInstanceState);
     }
 
-    public void getMovies(String url) {
+    public void getMovies() {
+
+        final String MOVIES_BASE_URL = "http://api.themoviedb.org/3/movie/";
+        // Get Preferences
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        String TYPE_PATH = preferences.getString(getString(R.string.pref_movies_key),
+                getString(R.string.pref_movies_key_default));
+        Log.v(TAG, TYPE_PATH);
+        // Get Movies Data
+        final String API_KEY = getString(R.string.api_key);
+        String full_url = MOVIES_BASE_URL + TYPE_PATH + "?api_key=" + API_KEY;
+        Log.v(TAG, full_url);
+
         JsonObjectRequest jsonRequest = new JsonObjectRequest
-                (Request.Method.GET, url, (String) null, new Response.Listener<JSONObject>() {
+                (Request.Method.GET, full_url, (String) null, new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
                         try {
-
                             JSONArray moviesArray = response.getJSONArray("results");
 
                             for (int i = 0; i < moviesArray.length(); i++) {
@@ -74,8 +91,16 @@ public class MainActivityFragment extends Fragment {
                         Toast.makeText(getContext(), "Something went wrong", Toast.LENGTH_SHORT).show();
                     }
                 });
-
         Volley.newRequestQueue(getActivity()).add(jsonRequest);
+    }
+
+    @Override
+    public void onResume() {
+        super.onStart();
+        if (movies != null) {
+            movies.clear();
+        }
+        getMovies();
     }
 
     @Nullable
@@ -85,25 +110,13 @@ public class MainActivityFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_main, container, false);
         rootView.setTag(TAG);
 
-        // Get Movies Data
-        final String MOVIES_BASE_URL = "http://api.themoviedb.org/3/movie/";
-        final String API_KEY = "1bb03dcadd1803cf79af629648c59d38";
-        String TYPE_PATH = "popular";
-
-        movies = new ArrayList<>();
-
-        String url = MOVIES_BASE_URL + TYPE_PATH + "?api_key=" + API_KEY;
-        getMovies(url);
-
         recyclerView = (RecyclerView) rootView.findViewById(R.id.movies_grid);
         gridLayoutManager = new GridLayoutManager(getActivity(), SPAN_COUNT);
-        MovieAdapter movieAdapter = new MovieAdapter(getContext(), movies);
+        movieAdapter = new MovieAdapter(getContext(), movies);
 
         recyclerView.setLayoutManager(gridLayoutManager);
         recyclerView.setAdapter(movieAdapter);
 
-
         return rootView;
     }
-
 }
