@@ -80,6 +80,10 @@ public class MainActivityFragment extends Fragment {
                                 String release_date = movieJson.getString("release_date");
 
                                 movies.add(new Movie(title, overview, rating, release_date, poster, backdrop));
+                                if (movieAdapter != null) {
+                                    MovieAdapter newMovieAdapter = new MovieAdapter(getActivity(), movies);
+                                    recyclerView.setAdapter(newMovieAdapter);
+                                }
                             }
                         } catch (JSONException e) {
                             e.printStackTrace();
@@ -100,7 +104,7 @@ public class MainActivityFragment extends Fragment {
         if (movies != null) {
             movies.clear();
             getMovies();
-            //movieAdapter.notifyDataSetChanged();
+            //movieAdapter.onDataChanged(movies);
             //Log.v(TAG, "Adapter notified");
         }
     }
