@@ -88,7 +88,7 @@ public class MainActivityFragment extends Fragment {
                 }, new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        Toast.makeText(getContext(), "Something went wrong", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getContext(), "Download error!", Toast.LENGTH_SHORT).show();
                     }
                 });
         Volley.newRequestQueue(getActivity()).add(jsonRequest);
@@ -96,11 +96,13 @@ public class MainActivityFragment extends Fragment {
 
     @Override
     public void onResume() {
-        super.onStart();
+        super.onResume();
         if (movies != null) {
             movies.clear();
+            getMovies();
+            //movieAdapter.notifyDataSetChanged();
+            //Log.v(TAG, "Adapter notified");
         }
-        getMovies();
     }
 
     @Nullable
@@ -109,6 +111,8 @@ public class MainActivityFragment extends Fragment {
 
         View rootView = inflater.inflate(R.layout.fragment_main, container, false);
         rootView.setTag(TAG);
+
+        getMovies();
 
         recyclerView = (RecyclerView) rootView.findViewById(R.id.movies_grid);
         gridLayoutManager = new GridLayoutManager(getActivity(), SPAN_COUNT);
