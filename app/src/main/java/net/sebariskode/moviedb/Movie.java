@@ -1,17 +1,15 @@
 package net.sebariskode.moviedb;
 
-public class Movie {
+import android.os.Parcel;
+import android.os.Parcelable;
+
+public class Movie implements Parcelable {
     String movieTitle;
-
     String movieOverview;
-
-    double movieRating;
-
     String movieReleaseDate;
-
     String moviePoster; // drawable reference id
-
     String movieBackdropImage;
+    double movieRating;
 
     public Movie(String movie, String overview, double rating, String release_date, String image, String backdrop) {
         movieTitle = movie;
@@ -45,4 +43,40 @@ public class Movie {
     public String getMovieBackdropImage() {
         return movieBackdropImage;
     }
+
+    protected Movie(Parcel in) {
+        movieTitle = in.readString();
+        movieOverview = in.readString();
+        movieReleaseDate = in.readString();
+        moviePoster = in.readString();
+        movieBackdropImage = in.readString();
+        movieRating = in.readDouble();
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(movieTitle);
+        dest.writeString(movieOverview);
+        dest.writeString(movieReleaseDate);
+        dest.writeString(moviePoster);
+        dest.writeString(movieBackdropImage);
+        dest.writeDouble(movieRating);
+    }
+
+    public static final Parcelable.Creator<Movie> CREATOR = new Parcelable.Creator<Movie>() {
+        @Override
+        public Movie createFromParcel(Parcel in) {
+            return new Movie(in);
+        }
+
+        @Override
+        public Movie[] newArray(int size) {
+            return new Movie[size];
+        }
+    };
 }
