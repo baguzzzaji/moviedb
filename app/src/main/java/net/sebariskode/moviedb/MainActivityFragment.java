@@ -51,7 +51,11 @@ public class MainActivityFragment extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (savedInstanceState == null || !savedInstanceState.containsKey("movies")) {
-            getMovies();
+            if (isNetworkAvailable()) {
+                getMovies();
+            } else {
+                Toast.makeText(getActivity(), "Could not download movies, network error.", Toast.LENGTH_SHORT).show();
+            }
         } else {
             movies = savedInstanceState.getParcelableArrayList("movies");
         }
