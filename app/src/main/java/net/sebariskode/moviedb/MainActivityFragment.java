@@ -59,6 +59,7 @@ public class MainActivityFragment extends Fragment {
         } else {
             movies = savedInstanceState.getParcelableArrayList("movies");
         }
+
     }
 
     @Override
@@ -123,27 +124,6 @@ public class MainActivityFragment extends Fragment {
                 = (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
         return activeNetworkInfo != null && activeNetworkInfo.isConnected();
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        SharedPreferences.OnSharedPreferenceChangeListener listener =
-                new SharedPreferences.OnSharedPreferenceChangeListener() {
-                    @Override
-                    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-                        if (movies != null) {
-                            movies.clear();
-                            if (isNetworkAvailable()) {
-                                getMovies();
-                            } else {
-                                Toast.makeText(getActivity(), "Could not download movies, network error.", Toast.LENGTH_SHORT).show();
-                            }
-                            //movieAdapter.onDataChanged(movies);
-                            //Log.v(TAG, "Adapter notified");
-                        }
-                    }
-                };
     }
 
     @Nullable
