@@ -1,6 +1,9 @@
 package net.sebariskode.moviedb;
 
+import android.content.Context;
 import android.content.SharedPreferences;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
@@ -47,6 +50,17 @@ public class MainActivityFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if (savedInstanceState == null || !savedInstanceState.containsKey("movies")) {
+            getMovies();
+        } else {
+            movies = savedInstanceState.getParcelableArrayList("movies");
+        }
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        outState.putParcelableArrayList("movies", movies);
+        super.onSaveInstanceState(outState);
     }
 
     public void getMovies() {
@@ -96,17 +110,36 @@ public class MainActivityFragment extends Fragment {
                     }
                 });
         Volley.newRequestQueue(getActivity()).add(jsonRequest);
+        Toast.makeText(getContext(), "Download success!", Toast.LENGTH_SHORT).show();
+
+    }
+
+    private boolean isNetworkAvailable() {
+        ConnectivityManager connectivityManager
+                = (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        if (movies != null) {
-            movies.clear();
-            getMovies();
-            //movieAdapter.onDataChanged(movies);
-            //Log.v(TAG, "Adapter notified");
-        }
+        SharedPreferences.OnSharedPreferenceChangeListener listener =
+                new SharedPreferences.OnSharedPreferenceChangeListener() {
+                    @Override
+                    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+                        if (movies != null) {
+                            movies.clear();
+                            if (isNetworkAvailable()) {
+                                getMovies();
+                            } else {
+                                Toast.makeText(getActivity(), "Could not download movies, network error.", Toast.LENGTH_SHORT).show();
+                            }
+                            //movieAdapter.onDataChanged(movies);
+                            //Log.v(TAG, "Adapter notified");
+                        }
+                    }
+                };
     }
 
     @Nullable
@@ -115,8 +148,6 @@ public class MainActivityFragment extends Fragment {
 
         View rootView = inflater.inflate(R.layout.fragment_main, container, false);
         rootView.setTag(TAG);
-
-        getMovies();
 
         recyclerView = (RecyclerView) rootView.findViewById(R.id.movies_grid);
         gridLayoutManager = new GridLayoutManager(getActivity(), SPAN_COUNT);
@@ -127,4 +158,5 @@ public class MainActivityFragment extends Fragment {
 
         return rootView;
     }
+
 }
